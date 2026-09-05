@@ -1,11 +1,10 @@
 /* AQVE mobile restaurant cover guardrail.
-   Force a compact, predictable restaurant media frame on phones.
-   This file loads after styles.css so legacy experimental rules cannot stretch cards. */
+   Stable mobile frame without the old stretched-card behaviour.
+   Normalized AQVE 16:9 covers still fill the frame normally.
+   Legacy / portrait covers get a contained foreground over a subtle backdrop
+   so important content is not cropped away while the card stays compact. */
 
 @media (max-width: 760px) {
-  /* Home/search restaurant cards: use an explicit height instead of relying on
-     aspect-ratio. This prevents portrait/intrinsic source dimensions from
-     stretching the card in any browser or legacy layout combination. */
   .feed .card > .card-media,
   .feed .card > .card-media.ri,
   .feed .card > .restaurant-cover,
@@ -23,6 +22,7 @@
     overflow: hidden !important;
     border-radius: 16px !important;
     flex: none !important;
+    background: #17131f !important;
   }
 
   .feed .card > .card-media > .ri-frame,
@@ -36,6 +36,7 @@
     min-height: 0 !important;
     max-height: 100% !important;
     overflow: hidden !important;
+    background: #17131f !important;
   }
 
   .feed .card > .card-media > .ri-frame > .ri-img,
@@ -53,8 +54,43 @@
     object-position: center center !important;
   }
 
-  /* Restaurant detail hero is also bounded so a portrait upload can never
-     inherit its natural height and turn into a tall mobile banner. */
+  /* Existing non-normalized covers can opt into safe composition by adding
+     .is-legacy-cover to the media wrapper. The full artwork remains visible
+     and no intrinsic portrait height can stretch the restaurant card. */
+  .feed .card > .card-media.is-legacy-cover > .ri-frame,
+  .feed .card > .restaurant-cover.is-legacy-cover > .ri-frame,
+  .rail .card > .ri.is-legacy-cover > .ri-frame {
+    background: #17131f !important;
+  }
+
+  .feed .card > .card-media.is-legacy-cover > .ri-frame::before,
+  .feed .card > .restaurant-cover.is-legacy-cover > .ri-frame::before,
+  .rail .card > .ri.is-legacy-cover > .ri-frame::before {
+    content: "";
+    position: absolute;
+    inset: -12px;
+    background: var(--aqve-cover-bg, #17131f);
+    background-position: center;
+    background-size: cover;
+    filter: blur(18px) brightness(.48) saturate(.8);
+    transform: scale(1.08);
+    opacity: .72;
+  }
+
+  .feed .card > .card-media.is-legacy-cover > .ri-frame > .ri-img,
+  .feed .card > .restaurant-cover.is-legacy-cover > .ri-frame > .ri-img,
+  .rail .card > .ri.is-legacy-cover > .ri-frame > .ri-img {
+    inset: 8px !important;
+    width: calc(100% - 16px) !important;
+    height: calc(100% - 16px) !important;
+    min-height: 0 !important;
+    max-height: calc(100% - 16px) !important;
+    object-fit: contain !important;
+    object-position: center !important;
+    border-radius: 10px;
+    z-index: 1;
+  }
+
   .ri-hero,
   .rest-cover {
     position: relative !important;
@@ -66,6 +102,7 @@
     aspect-ratio: auto !important;
     overflow: hidden !important;
     border-radius: 18px !important;
+    background: #17131f !important;
   }
 
   .ri-hero > .ri-frame,
