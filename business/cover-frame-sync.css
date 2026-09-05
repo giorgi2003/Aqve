@@ -1,0 +1,60 @@
+/* AQVE cover editor WYSIWYG guardrail.
+   Both editor panes use the exact same 16:9 media geometry as customer cards.
+   Width may differ on screen; the coordinate system/aspect ratio may not. */
+
+.aqve-crop-stage--desktop,
+.aqve-crop-stage--mobile {
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: 16 / 9 !important;
+  overflow: hidden !important;
+  background: #16131f !important;
+}
+
+.aqve-crop-stage--desktop {
+  border-radius: 20px 14px 0 0 !important;
+}
+
+.aqve-crop-stage--mobile {
+  border-radius: 16px !important;
+}
+
+/* Match the actual customer mobile card shell: the preview can be narrower,
+   but its cover viewport stays 16:9 at every editor/modal width. */
+.aqve-crop-pane--mobile {
+  width: min(100%, 390px) !important;
+  justify-self: center !important;
+}
+
+.aqve-live-card--mobile {
+  width: 100% !important;
+  margin-inline: 0 !important;
+}
+
+.aqve-crop-stage--desktop > img,
+.aqve-crop-stage--mobile > img {
+  position: absolute !important;
+  left: var(--aqve-ox, 0%) !important;
+  top: var(--aqve-oy, 0%) !important;
+  width: var(--aqve-dw, 100%) !important;
+  height: var(--aqve-dh, 100%) !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  object-fit: fill !important;
+  transform: none !important;
+}
+
+@media (max-width: 900px) {
+  .aqve-crop-panes {
+    grid-template-columns: 1fr !important;
+  }
+
+  .aqve-crop-pane--mobile {
+    width: min(100%, 430px) !important;
+  }
+}
