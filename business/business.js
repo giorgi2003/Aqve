@@ -136,8 +136,9 @@ const T = {
   cropHelp: "\u10db\u10dd\u10d0\u10e0\u10d2\u10d4 \u10e4\u10dd\u10e2\u10dd AQVE-\u10e1 \u10e4\u10dd\u10e0\u10db\u10d0\u10e2\u10e1",
   cropZoom: "\u10db\u10d0\u10e1\u10e8\u10e2\u10d0\u10d1\u10d8",
   cropReset: "\u10d0\u10e6\u10d3\u10d2\u10d4\u10dc\u10d0",
-  cropMobile: "\u10db\u10dd\u10d1\u10d8\u10da\u10e3\u10e0\u10d8",
-  cropDesktop: "\u10d3\u10d4\u10e1\u10d9\u10e2\u10dd\u10de\u10d8",
+  cropMobile: "\u10e2\u10d4\u10da\u10d4\u10e4\u10dd\u10dc\u10d8",
+  cropDesktop: "\u10d9\u10dd\u10db\u10de\u10d8\u10e3\u10e2\u10d4\u10e0\u10d8",
+  cropDrag: "\u10d2\u10d0\u10d3\u10d0\u10d0\u10d7\u10e0\u10d8\u10d4 \u10e4\u10dd\u10e2\u10dd \u10db\u10dd\u10e1\u10d0\u10e0\u10d2\u10d4\u10d1\u10d0\u10d3",
   coverHint: "\u10e5\u10d0\u10d5\u10d4\u10e0\u10d8 AQVE-\u10d6\u10d4 16:9 \u10e4\u10dd\u10e0\u10db\u10d0\u10e2\u10d8\u10d7 \u10d2\u10d0\u10db\u10dd\u10e9\u10dc\u10d3\u10d4\u10d1\u10d0. \u10e1\u10d0\u10e3\u10d9\u10d4\u10d7\u10d4\u10e1\u10dd \u10ec\u10e7\u10d0\u10e0\u10dd: 1600 \u00d7 900.",
   coverLow: "\u10e4\u10dd\u10e2\u10dd\u10e1 \u10ee\u10d0\u10e0\u10d8\u10e1\u10ee\u10d8 \u10d3\u10d0\u10d1\u10d0\u10da\u10d8\u10d0",
   coverPortrait: "\u10d0\u10db \u10e4\u10dd\u10e2\u10dd\u10e1 \u10e4\u10dd\u10e0\u10db\u10d0\u10e2\u10d8 \u10e5\u10d0\u10d5\u10d4\u10e0\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1 \u10d0\u10e0 \u10d0\u10e0\u10d8\u10e1 \u10dd\u10de\u10e2\u10d8\u10db\u10d0\u10da\u10e3\u10e0\u10d8.\n\u10e1\u10ea\u10d0\u10d3\u10d4 \u10f0\u10dd\u10e0\u10d8\u10d6\u10dd\u10dc\u10e2\u10d0\u10da\u10e3\u10e0\u10d8 \u10e4\u10dd\u10e2\u10dd \u10e3\u10d9\u10d4\u10d7\u10d4\u10e1\u10d8 \u10e8\u10d4\u10d3\u10d4\u10d2\u10d8\u10e1\u10d7\u10d5\u10d8\u10e1.",
@@ -284,10 +285,63 @@ function readImage(file, kind) {
   });
 }
 
-const AQVE_COVER = { w: 1600, h: 900, minW: 1200, minH: 675, maxZoom: 3 };
+const AQVE_COVER = { w: 1600, h: 900, minW: 1200, minH: 675, minZoom: 0.35, maxZoom: 3 };
+const AQVE_DESKTOP_ASPECT = 16 / 9;
+const AQVE_MOBILE_VIEW_W = 390;
+const AQVE_MOBILE_PAD_X = 32;
+const AQVE_MOBILE_H = Math.min(224, Math.max(176, 0.52 * AQVE_MOBILE_VIEW_W));
+const AQVE_MOBILE_W = AQVE_MOBILE_VIEW_W - AQVE_MOBILE_PAD_X;
+const AQVE_MOBILE_ASPECT = AQVE_MOBILE_W / AQVE_MOBILE_H;
 
 function clampCover(n, min, max) {
   return Math.min(max, Math.max(min, n));
+}
+
+function aqveCoverZoom(value) {
+  const n = Number(value);
+  return clampCover(Number.isFinite(n) ? n : 1, AQVE_COVER.minZoom, AQVE_COVER.maxZoom);
+}
+
+function defaultAqveCrop() {
+  return { x: 50, y: 50, zoom: 1 };
+}
+
+function copyAqveCrop(raw) {
+  const src = raw && typeof raw === "object" ? raw : {};
+  return {
+    x: clampCover(Number.isFinite(Number(src.x)) ? Number(src.x) : 50, 0, 100),
+    y: clampCover(Number.isFinite(Number(src.y)) ? Number(src.y) : 50, 0, 100),
+    zoom: aqveCoverZoom(src.zoom),
+  };
+}
+
+function parseFormCrop(form, key) {
+  try {
+    return copyAqveCrop(JSON.parse(form.dataset[key] || "{}"));
+  } catch {
+    return defaultAqveCrop();
+  }
+}
+
+function aqveCoverLayout(nw, nh, crop, frameAspect) {
+  const zoom = aqveCoverZoom(crop && crop.zoom);
+  const rawX = Number(crop && crop.x);
+  const rawY = Number(crop && crop.y);
+  const x = clampCover(Number.isFinite(rawX) ? rawX : 50, 0, 100);
+  const y = clampCover(Number.isFinite(rawY) ? rawY : 50, 0, 100);
+  const ratio = frameAspect > 0 ? frameAspect : AQVE_DESKTOP_ASPECT;
+  const imageAspect = nw / nh;
+  const dw = Math.max(1, imageAspect / ratio) * zoom;
+  const dh = Math.max(1, ratio / imageAspect) * zoom;
+  return {
+    zoom,
+    x,
+    y,
+    dw,
+    dh,
+    ox: (1 - dw) * (x / 100),
+    oy: (1 - dh) * (y / 100),
+  };
 }
 
 function loadHtmlImage(src) {
@@ -310,13 +364,12 @@ function aqveCoverOutputSize(nw, nh, zoom) {
 function exportAqveCover(img, crop) {
   const nw = img.naturalWidth || img.width;
   const nh = img.naturalHeight || img.height;
-  const zoom = clampCover(Number(crop.zoom) || 1, 1, AQVE_COVER.maxZoom);
-  const x = clampCover(Number(crop.x) || 50, 0, 100);
-  const y = clampCover(Number(crop.y) || 50, 0, 100);
-  const { w: outW, h: outH } = aqveCoverOutputSize(nw, nh, zoom);
-  const scale = Math.max(outW / nw, outH / nh) * zoom;
-  const dw = nw * scale;
-  const dh = nh * scale;
+  const layout = aqveCoverLayout(nw, nh, crop, AQVE_DESKTOP_ASPECT);
+  const { w: outW, h: outH } = layout.zoom < 1
+    ? { w: AQVE_COVER.w, h: AQVE_COVER.h }
+    : aqveCoverOutputSize(nw, nh, layout.zoom);
+  const dw = layout.dw * outW;
+  const dh = layout.dh * outH;
   const canvas = document.createElement("canvas");
   canvas.width = outW;
   canvas.height = outH;
@@ -325,7 +378,7 @@ function exportAqveCover(img, crop) {
   ctx.fillRect(0, 0, outW, outH);
   ctx.imageSmoothingEnabled = true;
   ctx.imageSmoothingQuality = "high";
-  ctx.drawImage(img, (outW - dw) * (x / 100), (outH - dh) * (y / 100), dw, dh);
+  ctx.drawImage(img, layout.ox * outW, layout.oy * outH, dw, dh);
   let quality = 0.86;
   let out = canvas.toDataURL("image/jpeg", quality);
   while (dataUrlBytes(out) > 1.8 * 1024 * 1024 && quality > 0.48) {
@@ -353,21 +406,78 @@ function closeCoverEditor() {
   box.remove();
 }
 
-function paintCoverCrop(root, crop) {
-  [root, ...root.querySelectorAll("[data-crop-frame], [data-crop-preview]")].forEach((el) => {
-    el.style.setProperty("--aqve-cx", crop.x + "%");
-    el.style.setProperty("--aqve-cy", crop.y + "%");
-    el.style.setProperty("--aqve-cz", String(crop.zoom));
-  });
-  const range = root.querySelector("[data-crop-zoom]");
+function frameAspectOf(el, fallback) {
+  const rect = el && el.getBoundingClientRect();
+  if (rect && rect.width > 2 && rect.height > 2) return rect.width / rect.height;
+  return fallback;
+}
+
+function paintCoverPane(root, key, crop, img) {
+  const pane = root.querySelector(`[data-crop-pane="${key}"]`);
+  const frame = root.querySelector(`[data-crop-frame="${key}"]`);
+  if (!pane || !frame) return;
+  const fallback = key === "mobile" ? AQVE_MOBILE_ASPECT : AQVE_DESKTOP_ASPECT;
+  const nw = img && (img.naturalWidth || img.width);
+  const nh = img && (img.naturalHeight || img.height);
+  const layout = nw && nh ? aqveCoverLayout(nw, nh, crop, frameAspectOf(frame, fallback)) : null;
+  if (layout) {
+    crop.zoom = layout.zoom;
+    crop.x = layout.x;
+    crop.y = layout.y;
+  }
+  frame.style.setProperty("--aqve-cx", crop.x + "%");
+  frame.style.setProperty("--aqve-cy", crop.y + "%");
+  frame.style.setProperty("--aqve-cz", String(crop.zoom));
+  if (layout) {
+    frame.style.setProperty("--aqve-dw", layout.dw * 100 + "%");
+    frame.style.setProperty("--aqve-dh", layout.dh * 100 + "%");
+    frame.style.setProperty("--aqve-ox", layout.ox * 100 + "%");
+    frame.style.setProperty("--aqve-oy", layout.oy * 100 + "%");
+    const stageImg = frame.querySelector("img");
+    if (stageImg) {
+      stageImg.style.left = layout.ox * 100 + "%";
+      stageImg.style.top = layout.oy * 100 + "%";
+      stageImg.style.width = layout.dw * 100 + "%";
+      stageImg.style.height = layout.dh * 100 + "%";
+    }
+  }
+  const range = pane.querySelector("[data-crop-zoom]");
   if (range && String(range.value) !== String(crop.zoom)) range.value = String(crop.zoom);
 }
 
-function coverEditorHTML(preview) {
+function coverPaneHTML(key, title, preview) {
   const letter = esc((preview.name || "A").slice(0, 1).toUpperCase());
   return `
+    <section class="aqve-crop-pane aqve-crop-pane--${key}" data-crop-pane="${key}">
+      <h3>${esc(title)}</h3>
+      <article class="aqve-live-card aqve-live-card--${key}">
+        <div class="aqve-crop-stage aqve-crop-stage--${key}" data-crop-frame="${key}">
+          <img alt="" draggable="false">
+          <span class="aqve-prev-badge">${esc(preview.promo || "\u10d3\u10e6\u10d4\u10e1 -20%")}</span>
+          <span class="aqve-prev-status"><i></i>\u10e6\u10d8\u10d0\u10d0</span>
+        </div>
+        ${preview.logo ? `<img class="aqve-prev-logo" src="${esc(preview.logo)}" alt="">` : `<span class="aqve-prev-logo aqve-prev-logo-ph">${letter}</span>`}
+        <div class="aqve-card-preview-body">
+          <h3>${esc(preview.name || T.name)}</h3>
+        </div>
+      </article>
+      <label class="aqve-crop-zoom">
+        <span>${T.cropZoom}</span>
+        <div>
+          <button type="button" data-crop-zoom-out aria-label="\u2212">\u2212</button>
+          <input type="range" data-crop-zoom min="${AQVE_COVER.minZoom}" max="${AQVE_COVER.maxZoom}" step="0.01" value="1">
+          <button type="button" data-crop-zoom-in aria-label="+">+</button>
+        </div>
+      </label>
+      <p class="aqve-crop-drag">${T.cropDrag}</p>
+      <button class="btn btn-ghost btn-sm" type="button" data-crop-reset>${T.cropReset}</button>
+    </section>`;
+}
+
+function coverEditorHTML(preview) {
+  return `
     <div class="aqve-crop-bg" data-cover-editor>
-      <div class="aqve-crop" role="dialog" aria-modal="true" aria-labelledby="aqveCropTitle">
+      <div class="aqve-crop aqve-crop--dual" role="dialog" aria-modal="true" aria-labelledby="aqveCropTitle">
         <header class="aqve-crop-head">
           <div>
             <h2 id="aqveCropTitle">${T.cropTitle}</h2>
@@ -375,47 +485,30 @@ function coverEditorHTML(preview) {
           </div>
           <button class="aqve-crop-x" type="button" data-crop-close aria-label="${T.cancel}">\u00d7</button>
         </header>
-        <div class="aqve-crop-stage" data-crop-frame>
-          <img alt="" draggable="false">
-        </div>
         <p class="aqve-crop-warn" data-crop-quality hidden>${T.coverLow}</p>
         <p class="aqve-crop-warn is-soft" data-crop-portrait hidden>${T.coverPortrait}</p>
-        <label class="aqve-crop-zoom">
-          <span>${T.cropZoom}</span>
-          <div>
-            <button type="button" data-crop-zoom-out aria-label="\u2212">\u2212</button>
-            <input type="range" data-crop-zoom min="1" max="${AQVE_COVER.maxZoom}" step="0.01" value="1">
-            <button type="button" data-crop-zoom-in aria-label="+">+</button>
-          </div>
-        </label>
-        <p class="aqve-crop-preview-label">${T.coverPreview}</p>
-        <article class="aqve-card-preview">
-          <div class="aqve-card-preview-media" data-crop-preview>
-            <img class="aqve-crop-src" alt="" draggable="false">
-            <span class="aqve-prev-badge">${esc(preview.promo || "\u10d3\u10e6\u10d4\u10e1 -20%")}</span>
-            <span class="aqve-prev-status"><i></i>\u10e6\u10d8\u10d0\u10d0</span>
-          </div>
-          ${preview.logo ? `<img class="aqve-prev-logo" src="${esc(preview.logo)}" alt="">` : `<span class="aqve-prev-logo aqve-prev-logo-ph">${letter}</span>`}
-          <div class="aqve-card-preview-body">
-            <h3>${esc(preview.name || T.name)}</h3>
-          </div>
-        </article>
+        <div class="aqve-crop-panes">
+          ${coverPaneHTML("desktop", "\uD83D\uDCBB " + T.cropDesktop, preview)}
+          ${coverPaneHTML("mobile", "\uD83D\uDCF1 " + T.cropMobile, preview)}
+        </div>
         <div class="aqve-crop-actions">
-          <button class="btn btn-ghost" type="button" data-crop-reset>${T.cropReset}</button>
+          <button class="btn btn-ghost" type="button" data-crop-close>${T.cancel}</button>
           <button class="btn btn-primary" type="button" data-crop-save>${T.save}</button>
         </div>
       </div>
     </div>`;
 }
 
-async function applyCoverComposition(form, img, crop, file) {
-  const normalized = exportAqveCover(img, crop);
+async function applyCoverComposition(form, img, desktop, mobile, file) {
+  const desktopCrop = copyAqveCrop(desktop);
+  const mobileCrop = copyAqveCrop(mobile);
+  const normalized = exportAqveCover(img, desktopCrop);
   let original = "";
   if (file) original = await readImage(file, "cover-original");
   else if (!form.dataset.coverOriginal) {
     try { original = await imageUrlToOriginal(img.src); } catch (_) {}
   }
-  pendingCover = { normalized, original };
+  pendingCover = { normalized, original, desktop: desktopCrop, mobile: mobileCrop };
   const drop = form.querySelector('[data-media-pick="cover"]');
   const dropImg = drop && drop.querySelector(".info-drop-img");
   if (dropImg) dropImg.src = normalized;
@@ -425,10 +518,17 @@ async function applyCoverComposition(form, img, crop, file) {
   const compose = form.querySelector("[data-cover-compose]");
   if (compose) compose.hidden = false;
   paintCoverQuality(form, normalized);
+  form.dataset.coverCropDesktop = JSON.stringify(desktopCrop);
+  form.dataset.coverCropMobile = JSON.stringify(mobileCrop);
   const saveBox = document.querySelector("[data-studio-save]");
   const wasDirty = saveBox && saveBox.dataset.studioSave === "unsaved";
   try {
-    const payload = { cover_data: normalized, cover_normalized: true };
+    const payload = {
+      cover_data: normalized,
+      cover_normalized: true,
+      cover_crop_desktop: desktopCrop,
+      cover_crop_mobile: mobileCrop,
+    };
     if (original) payload.cover_original_data = original;
     const saved = await api("/api/business/" + bizId, { method: "PATCH", body: JSON.stringify(payload) });
     if (saved && saved.cover_original_url) form.dataset.coverOriginal = saved.cover_original_url;
@@ -439,54 +539,24 @@ async function applyCoverComposition(form, img, crop, file) {
   if (!wasDirty && !pendingCover) form.dataset.snap = infoSnap(form);
 }
 
-async function openCoverEditor({ file, src, form }) {
-  if (!form) return;
-  closeCoverEditor();
-  const objectUrl = file ? URL.createObjectURL(file) : "";
-  const source = objectUrl || src;
-  if (!source) return;
-  const live = infoFormState(form);
-  document.body.insertAdjacentHTML("beforeend", coverEditorHTML(live));
-  const root = document.querySelector("[data-cover-editor]");
-  if (objectUrl) root.dataset.objectUrl = objectUrl;
-  const crop = { x: 50, y: 50, zoom: 1 };
-  let img;
-  try {
-    img = await loadHtmlImage(source);
-  } catch (err) {
-    closeCoverEditor();
-    throw err;
-  }
-  root.querySelectorAll(".aqve-crop-stage img, .aqve-crop-src").forEach((el) => {
-    el.src = source;
-  });
-  const nw = img.naturalWidth || 0;
-  const nh = img.naturalHeight || 0;
-  const quality = root.querySelector("[data-crop-quality]");
-  const portrait = root.querySelector("[data-crop-portrait]");
-  if (quality) quality.hidden = !(nw && nh && (nw < AQVE_COVER.minW || nh < AQVE_COVER.minH));
-  if (portrait) portrait.hidden = !(nw && nh && nw / nh < 1.2);
-  paintCoverCrop(root, crop);
-
+function bindCoverPane(root, key, crop, img) {
+  const pane = root.querySelector(`[data-crop-pane="${key}"]`);
+  const frame = root.querySelector(`[data-crop-frame="${key}"]`);
+  if (!pane || !frame) return;
+  const paint = () => paintCoverPane(root, key, crop, img);
   const setZoom = (next) => {
-    crop.zoom = clampCover(Number(next) || 1, 1, AQVE_COVER.maxZoom);
-    paintCoverCrop(root, crop);
+    crop.zoom = aqveCoverZoom(next);
+    paint();
   };
-  root.querySelector("[data-crop-zoom]").addEventListener("input", (e) => setZoom(e.target.value));
-  root.querySelector("[data-crop-zoom-out]").addEventListener("click", () => setZoom(crop.zoom - 0.1));
-  root.querySelector("[data-crop-zoom-in]").addEventListener("click", () => setZoom(crop.zoom + 0.1));
-  root.querySelector("[data-crop-reset]").addEventListener("click", () => {
+  pane.querySelector("[data-crop-zoom]").addEventListener("input", (e) => setZoom(e.target.value));
+  pane.querySelector("[data-crop-zoom-out]").addEventListener("click", () => setZoom(crop.zoom - 0.05));
+  pane.querySelector("[data-crop-zoom-in]").addEventListener("click", () => setZoom(crop.zoom + 0.05));
+  pane.querySelector("[data-crop-reset]").addEventListener("click", () => {
     crop.x = 50;
     crop.y = 50;
     crop.zoom = 1;
-    paintCoverCrop(root, crop);
+    paint();
   });
-  root.querySelector("[data-crop-close]").addEventListener("click", closeCoverEditor);
-  root.addEventListener("click", (e) => {
-    if (e.target === root) closeCoverEditor();
-  });
-
-  const frame = root.querySelector("[data-crop-frame]");
   let drag = null;
   frame.addEventListener("pointerdown", (e) => {
     if (e.button && e.button !== 0) return;
@@ -499,7 +569,7 @@ async function openCoverEditor({ file, src, form }) {
     if (!rect.width || !rect.height) return;
     crop.x = clampCover(drag.cx - ((e.clientX - drag.x) / rect.width) * 100 / crop.zoom, 0, 100);
     crop.y = clampCover(drag.cy - ((e.clientY - drag.y) / rect.height) * 100 / crop.zoom, 0, 100);
-    paintCoverCrop(root, crop);
+    paint();
   });
   const endDrag = () => { drag = null; };
   frame.addEventListener("pointerup", endDrag);
@@ -508,12 +578,50 @@ async function openCoverEditor({ file, src, form }) {
     e.preventDefault();
     setZoom(crop.zoom + (e.deltaY > 0 ? -0.08 : 0.08));
   }, { passive: false });
+  paint();
+}
 
+async function openCoverEditor({ file, src, form }) {
+  if (!form) return;
+  closeCoverEditor();
+  const objectUrl = file ? URL.createObjectURL(file) : "";
+  const source = objectUrl || src;
+  if (!source) return;
+  const live = infoFormState(form);
+  document.body.insertAdjacentHTML("beforeend", coverEditorHTML(live));
+  const root = document.querySelector("[data-cover-editor]");
+  if (objectUrl) root.dataset.objectUrl = objectUrl;
+  const desktop = parseFormCrop(form, "coverCropDesktop");
+  const mobile = parseFormCrop(form, "coverCropMobile");
+  let img;
+  try {
+    img = await loadHtmlImage(source);
+  } catch (err) {
+    closeCoverEditor();
+    throw err;
+  }
+  root.querySelectorAll("[data-crop-frame] img").forEach((el) => {
+    el.src = source;
+  });
+  const nw = img.naturalWidth || 0;
+  const nh = img.naturalHeight || 0;
+  const quality = root.querySelector("[data-crop-quality]");
+  const portrait = root.querySelector("[data-crop-portrait]");
+  if (quality) quality.hidden = !(nw && nh && (nw < AQVE_COVER.minW || nh < AQVE_COVER.minH));
+  if (portrait) portrait.hidden = !(nw && nh && nw / nh < 1.2);
+  requestAnimationFrame(() => {
+    bindCoverPane(root, "desktop", desktop, img);
+    bindCoverPane(root, "mobile", mobile, img);
+  });
+  root.querySelectorAll("[data-crop-close]").forEach((btn) => btn.addEventListener("click", closeCoverEditor));
+  root.addEventListener("click", (e) => {
+    if (e.target === root) closeCoverEditor();
+  });
   root.querySelector("[data-crop-save]").addEventListener("click", async () => {
     const btn = root.querySelector("[data-crop-save]");
     btn.disabled = true;
     try {
-      await applyCoverComposition(form, img, crop, file);
+      await applyCoverComposition(form, img, desktop, mobile, file);
       closeCoverEditor();
     } catch (err) {
       btn.disabled = false;
@@ -1613,7 +1721,7 @@ async function infoView() {
         ${studioSaveCluster("saved")}
       </header>
       <div class="studio-work">
-        <form class="studio-editor" id="infoForm" data-facebook-orig="${esc(b.facebook || "")}" data-instagram-orig="${esc(b.instagram || "")}" data-cover-original="${esc(b.cover_original_url || "")}">
+        <form class="studio-editor" id="infoForm" data-facebook-orig="${esc(b.facebook || "")}" data-instagram-orig="${esc(b.instagram || "")}" data-cover-original="${esc(b.cover_original_url || "")}" data-cover-crop-desktop="${esc(JSON.stringify(b.cover_crop_desktop || { x: 50, y: 50, zoom: 1 }))}" data-cover-crop-mobile="${esc(JSON.stringify(b.cover_crop_mobile || { x: 50, y: 50, zoom: 1 }))}">
           <section class="studio-sec">
             <i class="studio-node" aria-hidden="true"></i>
             <div class="studio-sec-head">
@@ -1864,6 +1972,8 @@ function bindInfoMedia() {
       if (name === "cover") {
         pendingCover = null;
         form.dataset.coverOriginal = "";
+        form.dataset.coverCropDesktop = JSON.stringify({ x: 50, y: 50, zoom: 1 });
+        form.dataset.coverCropMobile = JSON.stringify({ x: 50, y: 50, zoom: 1 });
         paintCoverQuality(form);
         const compose = form.querySelector("[data-cover-compose]");
         if (compose) compose.hidden = true;
@@ -2444,6 +2554,8 @@ app.addEventListener("submit", async (e) => {
         payload.cover_data = pendingCover.normalized;
         payload.cover_normalized = true;
         if (pendingCover.original) payload.cover_original_data = pendingCover.original;
+        if (pendingCover.desktop) payload.cover_crop_desktop = pendingCover.desktop;
+        if (pendingCover.mobile) payload.cover_crop_mobile = pendingCover.mobile;
       }
       await api("/api/business/" + bizId, { method: "PATCH", body: JSON.stringify(payload) });
       pendingCover = null;

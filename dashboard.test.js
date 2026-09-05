@@ -157,7 +157,7 @@ function cookie(res, name) {
     },
   });
   assert.deepStrictEqual(cropClamp.body.cover_crop_mobile, { x: 100, y: 0, zoom: 2.5 });
-  assert.deepStrictEqual(cropClamp.body.cover_crop_desktop, { x: 0, y: 100, zoom: 1 });
+  assert.deepStrictEqual(cropClamp.body.cover_crop_desktop, { x: 0, y: 100, zoom: 0.35 });
 
   const coverPair = await request(port, "PATCH", "/api/business/" + bizA, {
     headers: { cookie: ownerA },
@@ -242,7 +242,8 @@ function cookie(res, name) {
   const live = catalog.body.find((r) => r.id === bizA);
   assert.ok(live);
   assert.deepStrictEqual(live.cover_crop_mobile, { x: 100, y: 0, zoom: 2.5 });
-  assert.deepStrictEqual(live.cover_crop_desktop, { x: 0, y: 100, zoom: 1 });
+  assert.deepStrictEqual(live.cover_crop_desktop, { x: 0, y: 100, zoom: 0.35 });
+  assert.ok(String(live.cover_original || "").includes("/cover/original."));
   assert.ok(!("focal_x" in live));
   assert.ok(!("focal_y" in live));
   assert.strictEqual(live.live, "open");

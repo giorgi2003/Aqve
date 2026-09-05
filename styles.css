@@ -15,6 +15,8 @@
   --header: 76px;
   --tabbar: 68px;
   --cart: 360px;
+  --aqve-desktop-cover-ratio: 16 / 9;
+  --aqve-mobile-cover-ratio: 358 / 202.8;
 }
 
 * {
@@ -1413,7 +1415,7 @@ svg {
 .restaurant-cover {
   position: relative;
   width: 100%;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: var(--aqve-desktop-cover-ratio);
   overflow: hidden;
   border-radius: 20px 14px 0 0;
   background:
@@ -1485,6 +1487,32 @@ svg {
   object-fit: cover;
   object-position: center;
   z-index: 1;
+}
+
+.card-media.is-composed > .ri-frame,
+.ri.is-composed > .ri-frame,
+.restaurant-cover.is-composed > .ri-frame {
+  background: #16131f;
+}
+
+.card-media.is-composed .ri-img,
+.ri.is-composed .ri-img,
+.restaurant-cover.is-composed .ri-img {
+  position: absolute;
+  inset: auto;
+  left: var(--aqve-ox, 0%);
+  top: var(--aqve-oy, 0%);
+  right: auto;
+  bottom: auto;
+  width: var(--aqve-dw, 100%);
+  height: var(--aqve-dh, 100%);
+  max-width: none;
+  max-height: none;
+  min-width: 0;
+  min-height: 0;
+  object-fit: fill;
+  object-position: center;
+  transform: none;
 }
 
 .ri-mark {
@@ -1732,7 +1760,7 @@ svg {
 
 .card-ghost .card-media,
 .card-ghost .ri {
-  aspect-ratio: 16 / 9;
+  aspect-ratio: var(--aqve-desktop-cover-ratio);
   min-height: 0;
 }
 
@@ -1795,7 +1823,7 @@ svg {
 .card--feature .card-media,
 .card--feature .ri {
   flex: none;
-  aspect-ratio: 16 / 9;
+  aspect-ratio: var(--aqve-desktop-cover-ratio);
   min-height: 0;
 }
 
@@ -1817,7 +1845,7 @@ svg {
 
 .ri-hero,
 .rest-cover {
-  aspect-ratio: 16 / 9;
+  aspect-ratio: var(--aqve-desktop-cover-ratio);
   border-radius: 24px;
   overflow: hidden;
   position: relative;
@@ -3292,19 +3320,24 @@ body.dish-open {
   .card .ri-card,
   .card .ri-featured,
   .rail .card .ri,
-  .ri-hero,
-  .rest-cover,
   .restaurant-cover {
-    aspect-ratio: 16 / 9;
     width: 100%;
+    height: clamp(176px, 52vw, 224px);
     min-height: 0;
-    max-height: none;
+    max-height: 224px;
+    aspect-ratio: auto;
     overflow: hidden;
     border-radius: 16px;
   }
 
   .ri-hero,
   .rest-cover {
+    width: 100%;
+    height: clamp(190px, 56vw, 240px);
+    min-height: 0;
+    max-height: 240px;
+    aspect-ratio: auto;
+    overflow: hidden;
     border-radius: 18px;
   }
 
@@ -3324,6 +3357,21 @@ body.dish-open {
     height: 100%;
     object-fit: cover;
     object-position: center;
+  }
+
+  .card-media.is-composed .ri-img,
+  .ri.is-composed .ri-img,
+  .ri-hero.is-composed .ri-img {
+    position: absolute;
+    inset: auto;
+    left: var(--aqve-ox, 0%);
+    top: var(--aqve-oy, 0%);
+    right: auto;
+    bottom: auto;
+    width: var(--aqve-dw, 100%);
+    height: var(--aqve-dh, 100%);
+    object-fit: fill;
+    transform: none;
   }
 
   .card-route {

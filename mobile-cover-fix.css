@@ -1,8 +1,5 @@
 /* AQVE mobile restaurant cover guardrail.
-   Stable mobile frame without the old stretched-card behaviour.
-   Normalized AQVE 16:9 covers still fill the frame normally.
-   Legacy / portrait covers get a contained foreground over a subtle backdrop
-   so important content is not cropped away while the card stays compact. */
+   ONE authoritative compact frame. Crop data must not change these dimensions. */
 
 @media (max-width: 760px) {
   .feed .card > .card-media,
@@ -52,6 +49,35 @@
     margin: 0 !important;
     object-fit: cover !important;
     object-position: center center !important;
+  }
+
+  .feed .card > .card-media.is-composed > .ri-frame,
+  .feed .card > .card-media[data-crop-mobile] > .ri-frame,
+  .feed .card > .restaurant-cover.is-composed > .ri-frame,
+  .feed .card > .restaurant-cover[data-crop-mobile] > .ri-frame,
+  .rail .card > .ri.is-composed > .ri-frame,
+  .rail .card > .ri[data-crop-mobile] > .ri-frame {
+    background: #16131f !important;
+  }
+
+  .feed .card > .card-media.is-composed > .ri-frame > .ri-img,
+  .feed .card > .restaurant-cover.is-composed > .ri-frame > .ri-img,
+  .rail .card > .ri.is-composed > .ri-frame > .ri-img {
+    position: absolute !important;
+    inset: auto !important;
+    left: var(--aqve-ox, 0%) !important;
+    top: var(--aqve-oy, 0%) !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: var(--aqve-dw, 100%) !important;
+    height: var(--aqve-dh, 100%) !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: fill !important;
+    object-position: center center !important;
+    transform: none !important;
   }
 
   /* Existing non-normalized covers can opt into safe composition by adding
@@ -126,5 +152,36 @@
     max-height: 100% !important;
     object-fit: cover !important;
     object-position: center center !important;
+  }
+
+  .ri-hero.is-composed > .ri-frame,
+  .ri-hero[data-crop-mobile] > .ri-frame,
+  .rest-cover.is-composed > .ri-frame,
+  .rest-cover[data-crop-mobile] > .ri-frame {
+    background: #16131f !important;
+  }
+
+  .ri-hero.is-composed > .ri-frame > .ri-img,
+  .ri-hero[data-crop-mobile] > .ri-frame > .ri-img,
+  .rest-cover.is-composed > .ri-frame > .ri-img,
+  .rest-cover[data-crop-mobile] > .ri-frame > .ri-img,
+  .ri-hero.is-composed .ri-img,
+  .ri-hero[data-crop-mobile] .ri-img,
+  .rest-cover.is-composed .ri-img,
+  .rest-cover[data-crop-mobile] .ri-img {
+    inset: auto !important;
+    left: var(--aqve-ox, 0%) !important;
+    top: var(--aqve-oy, 0%) !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: var(--aqve-dw, 100%) !important;
+    height: var(--aqve-dh, 100%) !important;
+    min-width: 0 !important;
+    min-height: 0 !important;
+    max-width: none !important;
+    max-height: none !important;
+    object-fit: fill !important;
+    object-position: center center !important;
+    transform: none !important;
   }
 }

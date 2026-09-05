@@ -185,7 +185,7 @@ function parseLegacyIngredients(text) {
   return normalizeIngredientNames(parts);
 }
 
-const COVER_ZOOM_MIN = 1;
+const COVER_ZOOM_MIN = 0.35;
 const COVER_ZOOM_MAX = 2.5;
 
 function defaultCoverCrop() {
@@ -551,6 +551,7 @@ function createBusinessApi(ctx) {
       until: live.until,
       opens: live.opens,
       image: business.cover_url || business.logo_url || "",
+      cover_original: business.cover_original_url || "",
       logo: business.logo_url || "",
       cover_crop_mobile: resolveCoverCrops(business).mobile,
       cover_crop_desktop: resolveCoverCrops(business).desktop,
@@ -575,6 +576,7 @@ function createBusinessApi(ctx) {
   function withHost(req, rest) {
     const next = JSON.parse(JSON.stringify(rest));
     next.image = absUrl(req, next.image);
+    next.cover_original = absUrl(req, next.cover_original);
     next.logo = absUrl(req, next.logo);
     Object.keys(next.menu || {}).forEach((key) => {
       next.menu[key] = (next.menu[key] || []).map((item) => ({ ...item, image: absUrl(req, item.image) }));

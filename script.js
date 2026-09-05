@@ -663,18 +663,131 @@ function restaurantMenuItems(r) {
 function classifyRestaurantImage(img) {
   const box = img && img.closest("[data-ri]");
   if (!box) return;
+  applyRestaurantCover(box);
   box.classList.add("is-ready");
 }
 
-function restaurantImageHTML({ src, alt, eager, variant, extras }) {
-  const url = String(src || "");
+const AQVE_DESKTOP_ASPECT = 16 / 9;
+const AQVE_MOBILE_ASPECT = 358 / 202.8;
+const AQVE_COVER_ZOOM_MIN = 0.35;
+const AQVE_COVER_ZOOM_MAX = 3;
+
+function clampCoverValue(n, min, max) {
+  return Math.min(max, Math.max(min, n));
+}
+
+function parseCoverCrop(raw) {
+  let src = raw;
+  if (typeof src === "string") {
+    try { src = JSON.parse(src); } catch { src = null; }
+  }
+  const x = Number(src && src.x);
+  const y = Number(src && src.y);
+  const zoom = Number(src && src.zoom);
+  return {
+    x: clampCoverValue(Number.isFinite(x) ? x : 50, 0, 100),
+    y: clampCoverValue(Number.isFinite(y) ? y : 50, 0, 100),
+    zoom: clampCoverValue(Number.isFinite(zoom) ? zoom : 1, AQVE_COVER_ZOOM_MIN, AQVE_COVER_ZOOM_MAX),
+  };
+}
+
+function aqveCoverLayout(nw, nh, crop, frameAspect) {
+  const zoom = clampCoverValue(Number(crop && crop.zoom) || 1, AQVE_COVER_ZOOM_MIN, AQVE_COVER_ZOOM_MAX);
+  const x = clampCoverValue(Number.isFinite(Number(crop && crop.x)) ? Number(crop.x) : 50, 0, 100);
+  const y = clampCoverValue(Number.isFinite(Number(crop && crop.y)) ? Number(crop.y) : 50, 0, 100);
+  const ratio = frameAspect > 0 ? frameAspect : AQVE_DESKTOP_ASPECT;
+  const imageAspect = nw / nh;
+  const dw = Math.max(1, imageAspect / ratio) * zoom;
+  const dh = Math.max(1, ratio / imageAspect) * zoom;
+  return {
+    dw,
+    dh,
+    ox: (1 - dw) * (x / 100),
+    oy: (1 - dh) * (y / 100),
+  };
+}
+
+function coverImageSrc(r, fallback) {
+  const raw = String((r && (r.cover_original || r.cover_original_url)) || fallback || "");
+  if (!raw) return "";
+  if (!(r && (r.cover_crop_desktop || r.cover_crop_mobile || r.cover_original || r.cover_original_url))) return raw;
+  const desktop = parseCoverCrop(r.cover_crop_desktop);
+  const mobile = parseCoverCrop(r.cover_crop_mobile);
+  const stamp = [desktop.x, desktop.y, desktop.zoom, mobile.x, mobile.y, mobile.zoom].join("-");
+  return raw + (raw.includes("?") ? "&" : "?") + "cc=" + encodeURIComponent(stamp);
+}
+
+function cropFromBox(box, which) {
+  const prefix = which === "mobile" ? "cropMobile" : "cropDesktop";
+  const x = Number(box.dataset[prefix + "X"]);
+  const y = Number(box.dataset[prefix + "Y"]);
+  const zoom = Number(box.dataset[prefix + "Zoom"]);
+  if (Number.isFinite(x) && Number.isFinite(y) && Number.isFinite(zoom)) {
+    return parseCoverCrop({ x, y, zoom });
+  }
+  return parseCoverCrop(box.dataset[prefix]);
+}
+
+function paintCoverVars(el, layout) {
+  if (!el) return;
+  el.style.setProperty("--aqve-dw", layout.dw * 100 + "%");
+  el.style.setProperty("--aqve-dh", layout.dh * 100 + "%");
+  el.style.setProperty("--aqve-ox", layout.ox * 100 + "%");
+  el.style.setProperty("--aqve-oy", layout.oy * 100 + "%");
+}
+
+function applyRestaurantCover(box) {
+  if (!box || !box.hasAttribute("data-crop-desktop")) return;
+  const img = box.querySelector(".ri-img");
+  const frame = box.querySelector(".ri-frame") || box;
+  const nw = img && img.naturalWidth;
+  const nh = img && img.naturalHeight;
+  if (!nw || !nh) return;
+  const mobile = isMobileView();
+  const crop = cropFromBox(box, mobile ? "mobile" : "desktop");
+  const rect = frame.getBoundingClientRect();
+  const fallback = mobile ? AQVE_MOBILE_ASPECT : AQVE_DESKTOP_ASPECT;
+  const aspect = rect.width > 2 && rect.height > 2 ? rect.width / rect.height : fallback;
+  const layout = aqveCoverLayout(nw, nh, crop, aspect);
+  box.classList.add("is-composed");
+  paintCoverVars(img, layout);
+  img.style.setProperty("position", "absolute", "important");
+  img.style.setProperty("inset", "auto", "important");
+  img.style.setProperty("left", layout.ox * 100 + "%", "important");
+  img.style.setProperty("top", layout.oy * 100 + "%", "important");
+  img.style.setProperty("right", "auto", "important");
+  img.style.setProperty("bottom", "auto", "important");
+  img.style.setProperty("width", layout.dw * 100 + "%", "important");
+  img.style.setProperty("height", layout.dh * 100 + "%", "important");
+  img.style.setProperty("min-width", "0", "important");
+  img.style.setProperty("min-height", "0", "important");
+  img.style.setProperty("max-width", "none", "important");
+  img.style.setProperty("max-height", "none", "important");
+  img.style.setProperty("object-fit", "fill", "important");
+  img.style.setProperty("object-position", "center", "important");
+  img.style.setProperty("transform", "none", "important");
+}
+
+function applyRestaurantCovers() {
+  document.querySelectorAll("[data-ri][data-crop-desktop]").forEach(applyRestaurantCover);
+}
+
+function restaurantImageHTML({ src, alt, eager, variant, extras, restaurant }) {
+  const r = restaurant || {};
+  const url = coverImageSrc(r, src);
   const name = String(alt || "");
   const load = eager ? "" : 'loading="lazy" decoding="async"';
+  const hasCrop = Boolean(r.cover_crop_desktop || r.cover_crop_mobile || r.cover_original || r.cover_original_url);
+  const desktop = parseCoverCrop(r.cover_crop_desktop);
+  const mobile = parseCoverCrop(r.cover_crop_mobile);
+  const cropAttrs = hasCrop
+    ? ` data-crop-desktop="${esc(JSON.stringify(desktop))}" data-crop-mobile="${esc(JSON.stringify(mobile))}" data-crop-desktop-x="${desktop.x}" data-crop-desktop-y="${desktop.y}" data-crop-desktop-zoom="${desktop.zoom}" data-crop-mobile-x="${mobile.x}" data-crop-mobile-y="${mobile.y}" data-crop-mobile-zoom="${mobile.zoom}"`
+    : "";
   const photo = url
-    ? `<img class="ri-img" src="${url}" alt="${name}" ${load}>`
+    ? `<img class="ri-img" src="${esc(url)}" alt="${esc(name)}" ${load}>`
     : "";
   return `
-    <div class="card-media ri restaurant-cover ri-${variant || "card"}" data-ri>
+    <div class="card-media ri restaurant-cover ri-${variant || "card"}" data-ri${cropAttrs}>
       <span class="card-sk"></span>
       <div class="ri-frame">
         ${photo}
@@ -703,7 +816,7 @@ function cardHTML(r, i = 0, opts = {}) {
         ${featured ? `<svg class="card-route" viewBox="0 0 320 80" preserveAspectRatio="none" aria-hidden="true"><path d="M8 58 C 70 58 92 18 156 28 S 240 70 312 24"/></svg>` : ""}`;
   return `
     <article class="card${featured ? " card--feature" : ""} has-logo${r.live === "closed" ? " is-closed" : ""}${feedAnimated ? "" : " is-enter"}" data-open="${r.id}" style="--i:${i}">
-      ${restaurantImageHTML({ src: r.image, alt: r.name, eager, variant: featured ? "featured" : "card", extras })}
+      ${restaurantImageHTML({ src: r.image, alt: r.name, eager, variant: featured ? "featured" : "card", extras, restaurant: r })}
       ${r.logo ? `<img class="card-logo" src="${r.logo}" alt="">` : `<span class="card-logo card-logo-ph" aria-hidden="true">${letter}</span>`}
       <div class="card-body">
         <h3 class="card-name">${r.name}</h3>
@@ -729,6 +842,7 @@ function bindCardImages() {
       img.addEventListener("error", ready, { once: true });
     }
   });
+  applyRestaurantCovers();
   document.querySelectorAll("[data-ri]").forEach((box) => {
     if (!box.querySelector(".ri-img")) box.classList.add("is-ready");
   });
@@ -1074,6 +1188,7 @@ function renderRestaurant() {
         alt: r.name,
         eager: true,
         variant: "hero",
+        restaurant: r,
         extras: `
           ${r.logo ? `<img class="rest-logo" src="${r.logo}" alt="">` : ""}
           ${r.promo ? `<span class="badge">${r.promo}</span>` : ""}`,
@@ -2210,7 +2325,10 @@ function syncCompactHeader() {
 }
 
 window.addEventListener("hashchange", render);
-window.addEventListener("resize", renderCart);
+window.addEventListener("resize", () => {
+  renderCart();
+  applyRestaurantCovers();
+});
 window.addEventListener("scroll", syncCompactHeader, { passive: true });
 loadLiveCatalog().then(render);
 

@@ -2,3 +2,6 @@ data/
 !data/.gitkeep
 *.tmp
 .env
+
+# Local Netlify folder
+.netlify
