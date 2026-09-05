@@ -9,6 +9,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css?v=cover21">
   <link rel="stylesheet" href="mobile-cover-fix.css?v=4">
+  <link rel="stylesheet" href="final-cover-assets.css?v=1">
 </head>
 <body>
   <div class="app" id="app">
@@ -21,139 +22,26 @@
             <animateMotion dur="1.15s" begin="0.25s" fill="freeze" path="M38 44 C 92 44 108 20 168 23 S 248 52 292 46 C 360 38 410 54 498 48 S 680 26 758 38 C 830 48 888 22 962 31"/>
           </circle>
         </svg>
-
-        <button class="m-back" type="button" data-go="home" aria-label="უკან">
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg>
-        </button>
-
-        <a class="brand" href="#/" aria-label="აქვე">
-          <span class="route-node node-start" aria-hidden="true"></span>
-          <img src="aqve-logo.png" alt="" class="brand-logo" onerror="this.style.display='none'">
-          <span>აქვე</span>
-        </a>
-
-        <button class="location" id="locationBtn" type="button">
-          <span class="loc-pin" aria-hidden="true"></span>
-          <span>
-            <small>მიტანა</small>
-            <strong>ახალციხე</strong>
-          </span>
-          <svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg>
-        </button>
-
-        <label class="search">
-          <span class="search-route" aria-hidden="true"></span>
-          <span class="search-mark" aria-hidden="true"></span>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15zm10.3 2.8-4.7-4.7"/></svg>
-          <input id="search" type="search" placeholder="მოძებნე კერძი ან რესტორანი..." autocomplete="off">
-        </label>
-
-        <div class="top-actions">
-          <button class="aqve-act aqve-act--cart" id="headerCart" data-go="orders" type="button" aria-label="შეკვეთები">
-            <svg viewBox="0 0 24 24"><path d="M7 4h10l1.2 3H20a1 1 0 0 1 1 1v2H3V8a1 1 0 0 1 1-1h1.8L7 4zm-3 8h16v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7zm5 2v5m6-5v5"/></svg>
-            <i class="cart-dot" hidden></i>
-          </button>
-          <button class="aqve-act aqve-act--fav" data-go="favorites" type="button" aria-label="რჩეული">
-            <svg viewBox="0 0 24 24"><path d="M12 20.4 10.4 19C5.4 14.4 2 11.3 2 7.5A4.5 4.5 0 0 1 12 5a4.5 4.5 0 0 1 10 2.5c0 3.8-3.4 6.9-8.4 11.5L12 20.4z"/></svg>
-          </button>
-          <button class="aqve-act aqve-act--profile" data-go="profile" type="button" aria-label="პროფილი">
-            <svg viewBox="0 0 24 24"><path d="M12 12a4.2 4.2 0 1 0-4.2-4.2A4.2 4.2 0 0 0 12 12zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"/></svg>
-          </button>
-        </div>
+        <button class="m-back" type="button" data-go="home" aria-label="უკან"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M15 5 8 12l7 7"/></svg></button>
+        <a class="brand" href="#/" aria-label="აქვე"><span class="route-node node-start" aria-hidden="true"></span><img src="aqve-logo.png" alt="" class="brand-logo" onerror="this.style.display='none'"><span>აქვე</span></a>
+        <button class="location" id="locationBtn" type="button"><span class="loc-pin" aria-hidden="true"></span><span><small>მიტანა</small><strong>ახალციხე</strong></span><svg class="chev" viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button>
+        <label class="search"><span class="search-route" aria-hidden="true"></span><span class="search-mark" aria-hidden="true"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15zm10.3 2.8-4.7-4.7"/></svg><input id="search" type="search" placeholder="მოძებნე კერძი ან რესტორანი..." autocomplete="off"></label>
+        <div class="top-actions"><button class="aqve-act aqve-act--cart" id="headerCart" data-go="orders" type="button" aria-label="შეკვეთები"><svg viewBox="0 0 24 24"><path d="M7 4h10l1.2 3H20a1 1 0 0 1 1 1v2H3V8a1 1 0 0 1 1-1h1.8L7 4zm-3 8h16v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7zm5 2v5m6-5v5"/></svg><i class="cart-dot" hidden></i></button><button class="aqve-act aqve-act--fav" data-go="favorites" type="button" aria-label="რჩეული"><svg viewBox="0 0 24 24"><path d="M12 20.4 10.4 19C5.4 14.4 2 11.3 2 7.5A4.5 4.5 0 0 1 12 5a4.5 4.5 0 0 1 10 2.5c0 3.8-3.4 6.9-8.4 11.5L12 20.4z"/></svg></button><button class="aqve-act aqve-act--profile" data-go="profile" type="button" aria-label="პროფილი"><svg viewBox="0 0 24 24"><path d="M12 12a4.2 4.2 0 1 0-4.2-4.2A4.2 4.2 0 0 0 12 12zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"/></svg></button></div>
       </div>
     </header>
-
-    <div class="workspace">
-      <main class="view" id="view"></main>
-      <aside class="cart-panel" id="cartPanel" hidden></aside>
-    </div>
-
-    <nav class="tabbar" aria-label="მთავარი ნავიგაცია">
-      <i class="tab-rail" aria-hidden="true"></i>
-      <button class="tab is-active" data-go="home" type="button">
-        <svg viewBox="0 0 24 24"><path d="M4 11.2 12 4l8 7.2V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-8.8z"/></svg>
-        <span>მთავარი</span>
-      </button>
-      <button class="tab" data-go="search" type="button">
-        <svg viewBox="0 0 24 24"><path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15zm10.3 2.8-4.7-4.7"/></svg>
-        <span>ძებნა</span>
-      </button>
-      <button class="tab" data-go="orders" type="button">
-        <svg viewBox="0 0 24 24"><path d="M7 4h10l1.2 3H20a1 1 0 0 1 1 1v2H3V8a1 1 0 0 1 1-1h1.8L7 4zm-3 8h16v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7z"/></svg>
-        <span>შეკვეთები</span>
-        <i class="tab-badge cart-dot" hidden></i>
-      </button>
-      <button class="tab" data-go="favorites" type="button">
-        <svg viewBox="0 0 24 24"><path d="M12 20.4 10.4 19C5.4 14.4 2 11.3 2 7.5A4.5 4.5 0 0 1 12 5a4.5 4.5 0 0 1 10 2.5c0 3.8-3.4 6.9-8.4 11.5L12 20.4z"/></svg>
-        <span>რჩეული</span>
-      </button>
-      <button class="tab" data-go="profile" type="button">
-        <svg viewBox="0 0 24 24"><path d="M12 12a4.2 4.2 0 1 0-4.2-4.2A4.2 4.2 0 0 0 12 12zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"/></svg>
-        <span>პროფილი</span>
-      </button>
-    </nav>
-
+    <div class="workspace"><main class="view" id="view"></main><aside class="cart-panel" id="cartPanel" hidden></aside></div>
+    <nav class="tabbar" aria-label="მთავარი ნავიგაცია"><i class="tab-rail" aria-hidden="true"></i><button class="tab is-active" data-go="home" type="button"><svg viewBox="0 0 24 24"><path d="M4 11.2 12 4l8 7.2V20a1 1 0 0 1-1 1h-5v-6H10v6H5a1 1 0 0 1-1-1v-8.8z"/></svg><span>მთავარი</span></button><button class="tab" data-go="search" type="button"><svg viewBox="0 0 24 24"><path d="M10.5 18a7.5 7.5 0 1 1 0-15 7.5 7.5 0 0 1 0 15zm10.3 2.8-4.7-4.7"/></svg><span>ძებნა</span></button><button class="tab" data-go="orders" type="button"><svg viewBox="0 0 24 24"><path d="M7 4h10l1.2 3H20a1 1 0 0 1 1 1v2H3V8a1 1 0 0 1 1-1h1.8L7 4zm-3 8h16v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-7z"/></svg><span>შეკვეთები</span><i class="tab-badge cart-dot" hidden></i></button><button class="tab" data-go="favorites" type="button"><svg viewBox="0 0 24 24"><path d="M12 20.4 10.4 19C5.4 14.4 2 11.3 2 7.5A4.5 4.5 0 0 1 12 5a4.5 4.5 0 0 1 10 2.5c0 3.8-3.4 6.9-8.4 11.5L12 20.4z"/></svg><span>რჩეული</span></button><button class="tab" data-go="profile" type="button"><svg viewBox="0 0 24 24"><path d="M12 12a4.2 4.2 0 1 0-4.2-4.2A4.2 4.2 0 0 0 12 12zm0 2c-4 0-8 2-8 5v1h16v-1c0-3-4-5-8-5z"/></svg><span>პროფილი</span></button></nav>
     <button class="mobile-cart" id="mobileCartBtn" type="button" hidden></button>
   </div>
-
   <div class="overlay" id="overlay" hidden></div>
-
-  <div class="sheet" id="locationSheet" hidden>
-    <div class="sheet-card">
-      <i class="sheet-handle" aria-hidden="true"></i>
-      <h3>მიტანის მისამართი</h3>
-      <button class="place-row is-active" type="button">ახალციხე · ცენტრი</button>
-      <button class="place-row" type="button">ახალციხე · რაბათი</button>
-      <button class="ghost-btn" id="closeLocation" type="button">დახურვა</button>
-    </div>
-  </div>
-
-  <div class="sheet" id="partnerModal" hidden>
-    <div class="sheet-card">
-      <div class="sheet-head">
-        <h3>დაამატე შენი ბიზნესი</h3>
-        <button class="icon-btn" id="closePartner" type="button" aria-label="დახურვა">
-          <svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg>
-        </button>
-      </div>
-      <p class="muted">დემო რეგისტრაცია.</p>
-      <input class="field" placeholder="ბიზნესის სახელი">
-      <input class="field" placeholder="ტელეფონი">
-      <input class="field" placeholder="ელფოსტა">
-      <select class="field">
-        <option>რესტორანი</option>
-        <option>კაფე</option>
-        <option>საცხობი</option>
-        <option>მაღაზია</option>
-      </select>
-      <button class="primary-btn" id="partnerSubmit" type="button">გაგრძელება</button>
-    </div>
-  </div>
-
-  <div class="sheet" id="checkoutSheet" hidden>
-    <div class="sheet-card" id="checkoutBody"></div>
-  </div>
-
-  <div class="sheet" id="eatLayer" hidden>
-    <div class="sheet-card eat-card">
-      <i class="sheet-handle" aria-hidden="true"></i>
-      <p class="eat-kicker" id="eatLead">დღეს რას ვჭამთ?</p>
-      <div class="eat-spin" id="eatSpin">
-        <img id="eatImg" alt="">
-        <strong id="eatLabel"></strong>
-        <small id="eatMeta"></small>
-      </div>
-      <div class="eat-actions">
-        <button class="primary-btn" id="eatShow" type="button">მაჩვენე</button>
-        <button class="ghost-btn" id="eatAgain" type="button">კიდევ სცადე</button>
-      </div>
-    </div>
-  </div>
-
+  <div class="sheet" id="locationSheet" hidden><div class="sheet-card"><i class="sheet-handle" aria-hidden="true"></i><h3>მიტანის მისამართი</h3><button class="place-row is-active" type="button">ახალციხე · ცენტრი</button><button class="place-row" type="button">ახალციხე · რაბათი</button><button class="ghost-btn" id="closeLocation" type="button">დახურვა</button></div></div>
+  <div class="sheet" id="partnerModal" hidden><div class="sheet-card"><div class="sheet-head"><h3>დაამატე შენი ბიზნესი</h3><button class="icon-btn" id="closePartner" type="button" aria-label="დახურვა"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div><p class="muted">დემო რეგისტრაცია.</p><input class="field" placeholder="ბიზნესის სახელი"><input class="field" placeholder="ტელეფონი"><input class="field" placeholder="ელფოსტა"><select class="field"><option>რესტორანი</option><option>კაფე</option><option>საცხობი</option><option>მაღაზია</option></select><button class="primary-btn" id="partnerSubmit" type="button">გაგრძელება</button></div></div>
+  <div class="sheet" id="checkoutSheet" hidden><div class="sheet-card" id="checkoutBody"></div></div>
+  <div class="sheet" id="eatLayer" hidden><div class="sheet-card eat-card"><i class="sheet-handle" aria-hidden="true"></i><p class="eat-kicker" id="eatLead">დღეს რას ვჭამთ?</p><div class="eat-spin" id="eatSpin"><img id="eatImg" alt=""><strong id="eatLabel"></strong><small id="eatMeta"></small></div><div class="eat-actions"><button class="primary-btn" id="eatShow" type="button">მაჩვენე</button><button class="ghost-btn" id="eatAgain" type="button">კიდევ სცადე</button></div></div></div>
   <div class="cart-ping" id="cartPing" hidden>დაემატა კალათაში</div>
-
   <script src="applications.js"></script>
   <script src="cover-cache-fix.js?v=1"></script>
   <script src="script.js?v=cover21"></script>
+  <script src="final-cover-assets.js?v=1"></script>
 </body>
 </html>
