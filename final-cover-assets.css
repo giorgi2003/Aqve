@@ -1,0 +1,49 @@
+/* Final cover assets are already composed. The frame is stable; the image simply fills it. */
+
+.card-media.aqve-final-cover,
+.restaurant-cover.aqve-final-cover {
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: 16 / 9 !important;
+  overflow: hidden !important;
+  background: #16131f !important;
+}
+
+.aqve-final-cover > .ri-frame {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: hidden !important;
+}
+
+.aqve-final-cover .aqve-final-cover-img {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  margin: 0 !important;
+  object-fit: fill !important;
+  object-position: center !important;
+  transform: none !important;
+}
+
+@media (max-width: 760px) {
+  .feed .card > .aqve-final-cover,
+  .rail .card > .aqve-final-cover {
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 16 / 9 !important;
+  }
+}
