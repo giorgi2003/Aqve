@@ -1,6 +1,6 @@
-/* AQVE mobile restaurant cover guardrail.
-   Keep the customer card compact and stable. Crop data changes only the image
-   inside the frame; it must never participate in card layout. */
+/* AQVE restaurant cover guardrail.
+   Mobile customer cards and the Business cover editor use the same 16:9
+   viewport. Crop data changes only the image inside that viewport. */
 
 @media (max-width: 760px) {
   .feed .card > .card-media,
@@ -13,14 +13,14 @@
     position: relative !important;
     display: block !important;
     width: 100% !important;
-    height: clamp(176px, 52vw, 224px) !important;
-    min-height: 176px !important;
-    max-height: 224px !important;
-    aspect-ratio: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 16 / 9 !important;
     overflow: hidden !important;
     border-radius: 16px !important;
     flex: none !important;
-    background: #17131f !important;
+    background: #16131f !important;
   }
 
   .feed .card > .card-media > .ri-frame,
@@ -31,10 +31,12 @@
     display: block !important;
     width: 100% !important;
     height: 100% !important;
+    min-width: 0 !important;
     min-height: 0 !important;
-    max-height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
     overflow: hidden !important;
-    background: #17131f !important;
+    background: #16131f !important;
   }
 
   .feed .card > .card-media > .ri-frame > .ri-img,
@@ -55,11 +57,8 @@
   }
 
   .feed .card > .card-media.is-composed > .ri-frame,
-  .feed .card > .card-media[data-crop-mobile] > .ri-frame,
   .feed .card > .restaurant-cover.is-composed > .ri-frame,
-  .feed .card > .restaurant-cover[data-crop-mobile] > .ri-frame,
-  .rail .card > .ri.is-composed > .ri-frame,
-  .rail .card > .ri[data-crop-mobile] > .ri-frame {
+  .rail .card > .ri.is-composed > .ri-frame {
     background: #16131f !important;
   }
 
@@ -83,19 +82,18 @@
     transform: none !important;
   }
 
-  /* Restaurant detail cover uses its own compact fixed-height viewport too. */
   .ri-hero,
   .rest-cover {
     position: relative !important;
     display: block !important;
     width: 100% !important;
-    height: clamp(190px, 56vw, 240px) !important;
-    min-height: 190px !important;
-    max-height: 240px !important;
-    aspect-ratio: auto !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 16 / 9 !important;
     overflow: hidden !important;
     border-radius: 18px !important;
-    background: #17131f !important;
+    background: #16131f !important;
   }
 
   .ri-hero > .ri-frame,
@@ -104,10 +102,12 @@
     inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
+    min-width: 0 !important;
     min-height: 0 !important;
-    max-height: 100% !important;
+    max-width: none !important;
+    max-height: none !important;
     overflow: hidden !important;
-    background: #17131f !important;
+    background: #16131f !important;
   }
 
   .ri-hero > .ri-frame > .ri-img,
@@ -126,21 +126,10 @@
     object-position: center center !important;
   }
 
-  .ri-hero.is-composed > .ri-frame,
-  .ri-hero[data-crop-mobile] > .ri-frame,
-  .rest-cover.is-composed > .ri-frame,
-  .rest-cover[data-crop-mobile] > .ri-frame {
-    background: #16131f !important;
-  }
-
   .ri-hero.is-composed > .ri-frame > .ri-img,
-  .ri-hero[data-crop-mobile] > .ri-frame > .ri-img,
   .rest-cover.is-composed > .ri-frame > .ri-img,
-  .rest-cover[data-crop-mobile] > .ri-frame > .ri-img,
   .ri-hero.is-composed .ri-img,
-  .ri-hero[data-crop-mobile] .ri-img,
-  .rest-cover.is-composed .ri-img,
-  .rest-cover[data-crop-mobile] .ri-img {
+  .rest-cover.is-composed .ri-img {
     inset: auto !important;
     left: var(--aqve-ox, 0%) !important;
     top: var(--aqve-oy, 0%) !important;
