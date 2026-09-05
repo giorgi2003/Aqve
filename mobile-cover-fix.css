@@ -1,0 +1,79 @@
+/* AQVE mobile restaurant cover guardrail.
+   Keeps restaurant cards on a stable 16:9 frame regardless of source image dimensions.
+   Loaded after styles.css so older experimental mobile rules cannot override it. */
+
+@media (max-width: 760px) {
+  .feed .card .card-media,
+  .feed .card.card--feature .card-media,
+  .feed .card .ri,
+  .feed .card .ri-card,
+  .feed .card .ri-featured,
+  .rail .card .ri,
+  .restaurant-cover {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 16 / 9 !important;
+    overflow: hidden !important;
+    border-radius: 16px !important;
+  }
+
+  .feed .card .ri-frame,
+  .feed .card .card-media .ri-frame,
+  .restaurant-cover .ri-frame {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+  }
+
+  .feed .card .ri-img,
+  .feed .card .card-media img.ri-img,
+  .feed .card .ri img.ri-img,
+  .restaurant-cover > img,
+  .restaurant-cover .ri-img {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+  }
+
+  /* Restaurant profile hero remains bounded too; it must never inherit
+     the intrinsic height of a portrait upload on a phone. */
+  .ri-hero,
+  .rest-cover {
+    position: relative !important;
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 16 / 9 !important;
+    overflow: hidden !important;
+  }
+
+  .ri-hero .ri-frame,
+  .rest-cover .ri-frame {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+
+  .ri-hero .ri-img,
+  .rest-cover .ri-img {
+    position: absolute !important;
+    inset: 0 !important;
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: center center !important;
+  }
+}
