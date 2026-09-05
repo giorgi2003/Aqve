@@ -1,5 +1,6 @@
 /* AQVE mobile restaurant cover guardrail.
-   ONE authoritative compact frame. Crop data must not change these dimensions. */
+   ONE authoritative compact frame. Crop data must not change these dimensions.
+   IMPORTANT: this ratio must match the mobile cover editor/customer crop math. */
 
 @media (max-width: 760px) {
   .feed .card > .card-media,
@@ -12,10 +13,10 @@
     position: relative !important;
     display: block !important;
     width: 100% !important;
-    height: clamp(176px, 52vw, 224px) !important;
+    height: auto !important;
     min-height: 0 !important;
-    max-height: 224px !important;
-    aspect-ratio: auto !important;
+    max-height: none !important;
+    aspect-ratio: 358 / 202.8 !important;
     overflow: hidden !important;
     border-radius: 16px !important;
     flex: none !important;
@@ -122,10 +123,10 @@
     position: relative !important;
     display: block !important;
     width: 100% !important;
-    height: clamp(190px, 56vw, 240px) !important;
+    height: auto !important;
     min-height: 0 !important;
-    max-height: 240px !important;
-    aspect-ratio: auto !important;
+    max-height: none !important;
+    aspect-ratio: 358 / 202.8 !important;
     overflow: hidden !important;
     border-radius: 18px !important;
     background: #17131f !important;
