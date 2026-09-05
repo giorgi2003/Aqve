@@ -1,78 +1,92 @@
 /* AQVE mobile restaurant cover guardrail.
-   Keeps restaurant cards on a stable 16:9 frame regardless of source image dimensions.
-   Loaded after styles.css so older experimental mobile rules cannot override it. */
+   Force a compact, predictable restaurant media frame on phones.
+   This file loads after styles.css so legacy experimental rules cannot stretch cards. */
 
 @media (max-width: 760px) {
-  .feed .card .card-media,
-  .feed .card.card--feature .card-media,
-  .feed .card .ri,
-  .feed .card .ri-card,
-  .feed .card .ri-featured,
-  .rail .card .ri,
-  .restaurant-cover {
+  /* Home/search restaurant cards: use an explicit height instead of relying on
+     aspect-ratio. This prevents portrait/intrinsic source dimensions from
+     stretching the card in any browser or legacy layout combination. */
+  .feed .card > .card-media,
+  .feed .card > .card-media.ri,
+  .feed .card > .restaurant-cover,
+  .feed .card > .ri-card,
+  .feed .card > .ri-featured,
+  .rail .card > .card-media,
+  .rail .card > .ri {
     position: relative !important;
+    display: block !important;
     width: 100% !important;
-    height: auto !important;
+    height: clamp(176px, 52vw, 224px) !important;
     min-height: 0 !important;
-    max-height: none !important;
-    aspect-ratio: 16 / 9 !important;
+    max-height: 224px !important;
+    aspect-ratio: auto !important;
     overflow: hidden !important;
     border-radius: 16px !important;
+    flex: none !important;
   }
 
-  .feed .card .ri-frame,
-  .feed .card .card-media .ri-frame,
-  .restaurant-cover .ri-frame {
-    position: absolute !important;
-    inset: 0 !important;
-    width: 100% !important;
-    height: 100% !important;
-    min-height: 0 !important;
-  }
-
-  .feed .card .ri-img,
-  .feed .card .card-media img.ri-img,
-  .feed .card .ri img.ri-img,
-  .restaurant-cover > img,
-  .restaurant-cover .ri-img {
+  .feed .card > .card-media > .ri-frame,
+  .feed .card > .restaurant-cover > .ri-frame,
+  .rail .card > .ri > .ri-frame {
     position: absolute !important;
     inset: 0 !important;
     display: block !important;
     width: 100% !important;
     height: 100% !important;
     min-height: 0 !important;
-    max-height: none !important;
+    max-height: 100% !important;
+    overflow: hidden !important;
+  }
+
+  .feed .card > .card-media > .ri-frame > .ri-img,
+  .feed .card > .restaurant-cover > .ri-frame > .ri-img,
+  .rail .card > .ri > .ri-frame > .ri-img {
+    position: absolute !important;
+    inset: 0 !important;
+    display: block !important;
+    width: 100% !important;
+    height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
+    margin: 0 !important;
     object-fit: cover !important;
     object-position: center center !important;
   }
 
-  /* Restaurant profile hero remains bounded too; it must never inherit
-     the intrinsic height of a portrait upload on a phone. */
+  /* Restaurant detail hero is also bounded so a portrait upload can never
+     inherit its natural height and turn into a tall mobile banner. */
   .ri-hero,
   .rest-cover {
     position: relative !important;
+    display: block !important;
     width: 100% !important;
-    height: auto !important;
+    height: clamp(190px, 56vw, 240px) !important;
     min-height: 0 !important;
-    max-height: none !important;
-    aspect-ratio: 16 / 9 !important;
+    max-height: 240px !important;
+    aspect-ratio: auto !important;
     overflow: hidden !important;
+    border-radius: 18px !important;
   }
 
-  .ri-hero .ri-frame,
-  .rest-cover .ri-frame {
+  .ri-hero > .ri-frame,
+  .rest-cover > .ri-frame {
     position: absolute !important;
     inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
+    overflow: hidden !important;
   }
 
+  .ri-hero > .ri-frame > .ri-img,
+  .rest-cover > .ri-frame > .ri-img,
   .ri-hero .ri-img,
   .rest-cover .ri-img {
     position: absolute !important;
     inset: 0 !important;
     width: 100% !important;
     height: 100% !important;
+    min-height: 100% !important;
+    max-height: 100% !important;
     object-fit: cover !important;
     object-position: center center !important;
   }
