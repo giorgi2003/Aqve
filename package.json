@@ -1,0 +1,9 @@
+{
+  "name": "aqve",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node applications.test.js && node admin.test.js && node dashboard.test.js"
+  }
+}
