@@ -1,6 +1,7 @@
 /* AQVE restaurant cover contract — loaded LAST.
-   The media viewport is always 16:9. Image dimensions can never affect layout.
-   The full saved artwork is shown without crop or distortion. */
+   Desktop stays 16:9. Mobile intentionally uses a wider/shorter fixed viewport.
+   Image dimensions never affect layout. Full saved artwork is shown without crop
+   or distortion; unused space is the dark AQVE background. */
 
 .feed .card > .card-media,
 .feed .card > .restaurant-cover,
@@ -50,10 +51,6 @@
 .rail .card > .ri > .ri-frame > img.ri-img {
   position: absolute !important;
   inset: 0 !important;
-  left: 0 !important;
-  top: 0 !important;
-  right: 0 !important;
-  bottom: 0 !important;
   display: block !important;
   box-sizing: border-box !important;
   width: 100% !important;
@@ -70,19 +67,37 @@
   transform-origin: center center !important;
 }
 
-/* Never let old crop/composition classes override the final saved pixels. */
 .feed .card > .is-composed > .ri-frame > img.ri-img,
 .rail .card > .is-composed > .ri-frame > img.ri-img {
   inset: 0 !important;
-  left: 0 !important;
-  top: 0 !important;
   width: 100% !important;
   height: 100% !important;
   object-fit: contain !important;
   transform: none !important;
 }
 
-/* Detail/hero cover follows the same contract. */
+/* PHONE CONTRACT: clearly landscape, not tall. At 360px card width this is
+   about 180px high. Width changes responsively; ratio never changes. */
+@media (max-width: 760px) {
+  .feed .card > .card-media,
+  .feed .card > .restaurant-cover,
+  .feed .card > .ri,
+  .rail .card > .card-media,
+  .rail .card > .restaurant-cover,
+  .rail .card > .ri,
+  .feed .card > .aqve-final-cover,
+  .rail .card > .aqve-final-cover {
+    width: 100% !important;
+    height: auto !important;
+    min-height: 0 !important;
+    max-height: none !important;
+    aspect-ratio: 2 / 1 !important;
+    padding: 0 !important;
+    overflow: hidden !important;
+  }
+}
+
+/* Detail/hero cover follows the same no-distortion rule. */
 .ri-hero,
 .rest-cover {
   position: relative !important;
@@ -113,4 +128,11 @@
   object-fit: contain !important;
   object-position: center !important;
   transform: none !important;
+}
+
+@media (max-width: 760px) {
+  .ri-hero,
+  .rest-cover {
+    aspect-ratio: 2 / 1 !important;
+  }
 }
