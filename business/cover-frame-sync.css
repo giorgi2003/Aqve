@@ -1,15 +1,18 @@
-/* AQVE cover editor WYSIWYG guardrail.
-   Both editor panes use the exact same 16:9 media geometry as customer cards.
-   Width may differ on screen; the coordinate system/aspect ratio may not. */
+/* AQVE WYSIWYG COVER CONTRACT
+   Desktop and mobile editors use the exact same deterministic 16:9 viewport
+   as the customer card. Width may differ, geometry may not. */
 
 .aqve-crop-stage--desktop,
 .aqve-crop-stage--mobile {
   position: relative !important;
+  display: block !important;
+  box-sizing: border-box !important;
   width: 100% !important;
-  height: auto !important;
+  height: 0 !important;
   min-height: 0 !important;
-  max-height: none !important;
-  aspect-ratio: 16 / 9 !important;
+  max-height: 0 !important;
+  padding: 0 0 56.25% 0 !important;
+  aspect-ratio: auto !important;
   overflow: hidden !important;
   background: #16131f !important;
 }
@@ -22,8 +25,6 @@
   border-radius: 16px !important;
 }
 
-/* Match the actual customer mobile card shell: the preview can be narrower,
-   but its cover viewport stays 16:9 at every editor/modal width. */
 .aqve-crop-pane--mobile {
   width: min(100%, 390px) !important;
   justify-self: center !important;
@@ -34,17 +35,23 @@
   margin-inline: 0 !important;
 }
 
+/* The editor keeps manual x/y/zoom composition. The image is absolutely
+   positioned so its intrinsic dimensions can never resize the viewport. */
 .aqve-crop-stage--desktop > img,
 .aqve-crop-stage--mobile > img {
   position: absolute !important;
+  inset: auto !important;
   left: var(--aqve-ox, 0%) !important;
   top: var(--aqve-oy, 0%) !important;
+  right: auto !important;
+  bottom: auto !important;
   width: var(--aqve-dw, 100%) !important;
   height: var(--aqve-dh, 100%) !important;
   min-width: 0 !important;
   min-height: 0 !important;
   max-width: none !important;
   max-height: none !important;
+  margin: 0 !important;
   object-fit: fill !important;
   transform: none !important;
 }
