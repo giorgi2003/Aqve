@@ -1,49 +1,86 @@
-/* Final cover assets are already composed. The frame is stable; the image simply fills it. */
+/* AQVE FINAL COVER CONTRACT
+   1) The card frame is always 16:9 and can never grow from image dimensions.
+   2) The image is never cropped or distorted.
+   3) The Business editor exports the final pixels; customer UI only displays them.
+   4) The classic percentage-ratio box is deliberate: it is deterministic even
+      when older card CSS contains height/aspect-ratio rules. */
 
 .card-media.aqve-final-cover,
-.restaurant-cover.aqve-final-cover {
+.restaurant-cover.aqve-final-cover,
+.feed .card > .card-media.aqve-final-cover,
+.feed .card > .restaurant-cover.aqve-final-cover {
   position: relative !important;
+  display: block !important;
+  box-sizing: border-box !important;
   width: 100% !important;
-  height: auto !important;
+  height: 0 !important;
   min-height: 0 !important;
-  max-height: none !important;
-  aspect-ratio: 16 / 9 !important;
+  max-height: 0 !important;
+  padding: 0 0 56.25% 0 !important;
+  aspect-ratio: auto !important;
   overflow: hidden !important;
+  flex: none !important;
   background: #16131f !important;
 }
 
-.aqve-final-cover > .ri-frame {
-  position: absolute !important;
-  inset: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  min-height: 0 !important;
-  max-height: none !important;
-  overflow: hidden !important;
-}
-
-.aqve-final-cover .aqve-final-cover-img {
+.aqve-final-cover > .ri-frame,
+.feed .card > .aqve-final-cover > .ri-frame {
   position: absolute !important;
   inset: 0 !important;
   display: block !important;
+  box-sizing: border-box !important;
   width: 100% !important;
   height: 100% !important;
   min-width: 0 !important;
   min-height: 0 !important;
   max-width: none !important;
   max-height: none !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #16131f !important;
+}
+
+.aqve-final-cover .aqve-final-cover-img,
+.feed .card > .aqve-final-cover .aqve-final-cover-img {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
   margin: 0 !important;
-  object-fit: fill !important;
-  object-position: center !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  transform: none !important;
+  transform-origin: center !important;
+}
+
+/* Final assets must never re-enter the old runtime composition pipeline. */
+.aqve-final-cover.is-composed .aqve-final-cover-img {
+  inset: 0 !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
   transform: none !important;
 }
 
 @media (max-width: 760px) {
   .feed .card > .aqve-final-cover,
-  .rail .card > .aqve-final-cover {
-    height: auto !important;
+  .rail .card > .aqve-final-cover,
+  .feed .card.card--feature > .aqve-final-cover {
+    width: 100% !important;
+    height: 0 !important;
     min-height: 0 !important;
-    max-height: none !important;
-    aspect-ratio: 16 / 9 !important;
+    max-height: 0 !important;
+    padding-bottom: 56.25% !important;
+    aspect-ratio: auto !important;
+    border-radius: 16px !important;
   }
 }
