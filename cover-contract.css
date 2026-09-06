@@ -1,0 +1,116 @@
+/* AQVE restaurant cover contract — loaded LAST.
+   The media viewport is always 16:9. Image dimensions can never affect layout.
+   The full saved artwork is shown without crop or distortion. */
+
+.feed .card > .card-media,
+.feed .card > .restaurant-cover,
+.feed .card > .ri,
+.rail .card > .card-media,
+.rail .card > .restaurant-cover,
+.rail .card > .ri {
+  position: relative !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: 16 / 9 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  flex: 0 0 auto !important;
+  background: #16131f !important;
+}
+
+.feed .card > .card-media > .ri-frame,
+.feed .card > .restaurant-cover > .ri-frame,
+.feed .card > .ri > .ri-frame,
+.rail .card > .card-media > .ri-frame,
+.rail .card > .restaurant-cover > .ri-frame,
+.rail .card > .ri > .ri-frame {
+  position: absolute !important;
+  inset: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: none !important;
+  max-height: none !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  background: #16131f !important;
+}
+
+.feed .card > .card-media > .ri-frame > img.ri-img,
+.feed .card > .restaurant-cover > .ri-frame > img.ri-img,
+.feed .card > .ri > .ri-frame > img.ri-img,
+.rail .card > .card-media > .ri-frame > img.ri-img,
+.rail .card > .restaurant-cover > .ri-frame > img.ri-img,
+.rail .card > .ri > .ri-frame > img.ri-img {
+  position: absolute !important;
+  inset: 0 !important;
+  left: 0 !important;
+  top: 0 !important;
+  right: 0 !important;
+  bottom: 0 !important;
+  display: block !important;
+  box-sizing: border-box !important;
+  width: 100% !important;
+  height: 100% !important;
+  min-width: 0 !important;
+  min-height: 0 !important;
+  max-width: 100% !important;
+  max-height: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  object-fit: contain !important;
+  object-position: center center !important;
+  transform: none !important;
+  transform-origin: center center !important;
+}
+
+/* Never let old crop/composition classes override the final saved pixels. */
+.feed .card > .is-composed > .ri-frame > img.ri-img,
+.rail .card > .is-composed > .ri-frame > img.ri-img {
+  inset: 0 !important;
+  left: 0 !important;
+  top: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  transform: none !important;
+}
+
+/* Detail/hero cover follows the same contract. */
+.ri-hero,
+.rest-cover {
+  position: relative !important;
+  width: 100% !important;
+  height: auto !important;
+  min-height: 0 !important;
+  max-height: none !important;
+  aspect-ratio: 16 / 9 !important;
+  overflow: hidden !important;
+  background: #16131f !important;
+}
+
+.ri-hero > .ri-frame,
+.rest-cover > .ri-frame {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  overflow: hidden !important;
+}
+
+.ri-hero > .ri-frame > img.ri-img,
+.rest-cover > .ri-frame > img.ri-img {
+  position: absolute !important;
+  inset: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: contain !important;
+  object-position: center !important;
+  transform: none !important;
+}
